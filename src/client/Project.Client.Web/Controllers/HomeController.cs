@@ -32,7 +32,7 @@ namespace Project.Client.Web.Controllers
                 id = 2013;
             }
             ViewBag.Year = id;
-
+            
             ViewBag.AlbumData = HttpContext.Application[string.Format("{0}_AlbumData", id)].ToString();
             ViewBag.SingleData = HttpContext.Application[string.Format("{0}_SingleData", id)].ToString();
             ViewBag.StreamingData = HttpContext.Application[string.Format("{0}_StreamingData", id)].ToString();
