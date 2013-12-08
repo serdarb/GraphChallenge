@@ -1,0 +1,140 @@
+﻿
+<div class="row">
+
+    <h1>Cumulative Sales Overtime</h1>
+
+    <div class="row" style="text-align: center; margin-bottom: 20px;">
+        <label class="label label-default" style="background-color: #2F7ED8!important;" title="Album">
+            <input type="checkbox" name="album" value="album" checked="checked" title="Album" />&nbsp;&nbsp;album
+        </label>
+        <label class="label label-default" style="background-color: #0D233A!important;" title="AlbumTrack">
+            <input type="checkbox" name="single" value="single" checked="checked" title="AlbumTrack" />&nbsp;&nbsp;single
+        </label>
+        <label class="label label-default" style="background-color: #8BBC21!important;" title="Download">
+            <input type="checkbox" name="streaming" value="streaming" checked="checked" title="Download" />&nbsp;&nbsp;streaming
+        </label>
+        <br />
+    </div>
+    <div class="row" style="text-align: center; margin-bottom: 15px;">
+        <label class="label label-default">
+            @if ( ViewBag.Year == 2013)
+            {
+                <input type="radio" name="year" id="r2013" value="2013" checked="checked" />
+            }
+            else
+            {
+                <input type="radio" name="year" id="r2013" value="2013" />
+            }
+            @Html.Raw("&nbsp;&nbsp;2013")
+        </label>
+        <label class="label label-default" >
+            @if (ViewBag.Year == 2012)
+            {
+                <input type="radio" name="year" id="r2012" value="2012" checked="checked" /> 
+            }
+            else
+            {
+                <input type="radio" name="year" id="r2012" value="2012" />
+            }
+            @Html.Raw("&nbsp;&nbsp;2012")
+        </label>
+        <br />
+    </div>
+
+    <div class="row">
+        <div id="chart">
+
+        </div>
+        <br />
+        <div class="row" style="text-align: center;">* there are @ViewBag.BrokenDataCount rows which is not included in this report because of having negative value on salescount column.</div>
+    </div>
+</div>
+
+
+@section script
+{
+
+    <script src="/Public/js/highcharts.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            var _album = {
+                name: 'album',
+                data: @Html.Raw(ViewBag.AlbumData)
+            };
+            var _single = {
+                name: 'single',
+                data: @Html.Raw(ViewBag.SingleData)
+            };
+            var _streaming = {
+                name: 'streaming',
+                data: @Html.Raw(ViewBag.StreamingData)
+            };
+
+            var series = [_album, _single, _streaming];
+
+            function prepareGraph() {
+                $('#chart').highcharts({
+                    title: '',
+                    xAxis: {
+                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                    },
+                    yAxis: {
+                        title: { text: 'Sale Count' },
+                        plotLines: [
+                            {
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }
+                        ]
+                    },
+                    tooltip: { valueSuffix: ' Item' },
+                    legend: { enabled: false },
+                    series: series
+                });
+            }
+
+
+            $('input[type=checkbox]').on('change', function () {
+                var item = $(this).val();
+
+                if ($(this).prop('checked')) {
+
+                    if (item == "album") {
+                        series.push(_album);
+                    }
+
+                    if (item == "single") {
+                        series.push(_single);
+                    }
+
+                    if (item == "streaming") {
+                        series.push(_streaming);
+                    }
+
+                } else {
+                    $.each(series, function (index, result) {
+                        if (result != undefined
+                            && result['name'] == item) {
+                            series.splice(index, 1);
+                        }
+                    });
+                }
+
+                prepareGraph();
+            });
+
+
+            $('input[type=radio]').on('click', function () {
+                var item = $(this).val();
+                document.location.href = '/home/index/' + item;
+            });
+
+            prepareGraph();
+        });
+
+
+    </script>
+}

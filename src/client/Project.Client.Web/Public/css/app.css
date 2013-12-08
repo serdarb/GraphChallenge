@@ -1,0 +1,13 @@
+﻿body {
+}
+
+h1 {
+    text-align: center;margin: 22px;
+}
+
+.label {
+    margin: 5px;
+    padding: 7px;
+    font-size: 18px;
+    cursor: pointer;
+}
